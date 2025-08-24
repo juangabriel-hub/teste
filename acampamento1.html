@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mural Emaús</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background: #6a1b9a;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .form-container {
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+
+    input[type="text"], input[type="file"] {
+      margin: 10px 0;
+      padding: 10px;
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background: #6a1b9a;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #4a0d6d;
+    }
+
+    .mural {
+      margin: 30px auto;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+    }
+
+    .card img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .card h3 {
+      margin: 10px 0 5px;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Bem-vindos ao mural Emaús</header>
+
+  <div class="form-container">
+    <h2>Adicione suas lembranças do acampamento</h2>
+    <input type="text" id="nome" placeholder="Digite seu nome">
+    <input type="file" id="foto" accept="image/*">
+    <button onclick="adicionarMural()">Adicionar ao Mural</button>
+  </div>
+
+  <div class="mural" id="mural"></div>
+
+  <script>
+    function adicionarMural() {
+      const nome = document.getElementById("nome").value;
+      const fotoInput = document.getElementById("foto");
+      const mural = document.getElementById("mural");
+
+      if (!nome || !fotoInput.files[0]) {
+        alert("Por favor, preencha o nome e selecione uma foto.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        card.innerHTML = `
+          <img src="${e.target.result}" alt="Foto de ${nome}">
+          <h3>${nome}</h3>
+          <p>Lembras do seu acampamento ✨</p>
+        `;
+
+        mural.prepend(card);
+      };
+
+      reader.readAsDataURL(fotoInput.files[0]);
+
+      // limpar campos
+      document.getElementById("nome").value = "";
+      document.getElementById("foto").value = "";
+    }
+  </script>
+
+</body>
+</html>

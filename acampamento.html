@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindos ao Mural Emaús</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f3b2d;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1a4c3b;
+      padding: 20px;
+    }
+    header img {
+      width: 150px;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    h1 {
+      margin: 10px 0;
+      font-size: 24px;
+    }
+    #upload-area {
+      margin: 20px;
+      padding: 20px;
+      border: 2px dashed #fff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .photo-card {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      margin: 10px;
+      padding: 10px;
+      width: 200px;
+    }
+    .photo-card img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    input[type="text"] {
+      width: 90%;
+      margin-top: 5px;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="imagens/logo.jpg" alt="Logo Emaús">
+    <h1>Bem-vindos ao Mural Emaús</h1>
+  </header>
+
+  <main>
+    <div id="upload-area" onclick="document.getElementById('fileInput').click()">
+      Clique aqui para anexar uma foto
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleUpload(event)">
+
+    <div id="gallery"></div>
+  </main>
+
+  <script>
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        addPhotoToGallery(e.target.result);
+        savePhoto(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addPhotoToGallery(src, title = "") {
+      const gallery = document.getElementById("gallery");
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.innerHTML = `
+        <img src="${src}" alt="Foto do mural">
+        <input type="text" placeholder="Escreva um título" value="${title}" 
+          onchange="updateTitle(this, '${src}')">
+      `;
+      gallery.appendChild(card);
+    }
+
+    function updateTitle(input, src) {
+      const photos = JSON.parse(localStorage.getItem('muralFotos') || '[]');
+      const index = photos.findIndex(p => p.src === src);
+      if (index !== -1) {
+        photos[index].title = input.value;
+        localStorage.setItem('muralFotos', JSON.stringify(photos));
+      }
+    }
+
+    function savePhoto(src) {
+      const photos = JSON.parse(localStorage.getItem('muralFotos') || '[]');
+      photos.push({src: src, title: ""});
+      localStorage.setItem('muralFotos', JSON.stringify(photos));
+    }
+
+    function loadPhotos() {
+      const photos = JSON.parse(localStorage.getItem('muralFotos') || '[]');
+      photos.forEach(p => addPhotoToGallery(p.src, p.title));
+    }
+
+    loadPhotos();
+  </script>
+</body>
+</html>
