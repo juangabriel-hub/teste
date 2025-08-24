@@ -1,132 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Mural Emaús</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    header {
-      background: #6a1b9a;
-      color: white;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .form-container {
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
-
-    input[type="text"], input[type="file"] {
-      margin: 10px 0;
-      padding: 10px;
-      width: 90%;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    button {
-      background: #6a1b9a;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #4a0d6d;
-    }
-
-    .mural {
-      margin: 30px auto;
-      max-width: 900px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      padding: 15px;
-      text-align: center;
-    }
-
-    .card img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-
-    .card h3 {
-      margin: 10px 0 5px;
-    }
-
-    .card p {
-      color: #555;
-      font-size: 14px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bem-vindos ao Mural Emaús</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="top">
+    <img src="imagens/logo.jpg" alt="Emaús" class="logo" />
+    <div class="titles">
+      <h1>Bem-vindos ao Mural Emaús</h1>
+      <p class="subtitle">Lembras do seu acampamento?</p>
+    </div>
+    <div class="actions">
+      <button id="copyLink">Copiar link do mural</button>
+      <button id="newRoom" class="ghost">Novo mural</button>
+    </div>
+  </header>
 
-  <header>Bem-vindos ao mural Emaús</header>
+  <section class="room">
+    <label>Mural:</label>
+    <input id="roomId" type="text" readonly />
+    <a id="openLink" class="link" target="_blank" rel="noopener">Abrir em nova aba</a>
+  </section>
 
-  <div class="form-container">
-    <h2>Adicione suas lembranças do acampamento</h2>
-    <input type="text" id="nome" placeholder="Digite seu nome">
-    <input type="file" id="foto" accept="image/*">
-    <button onclick="adicionarMural()">Adicionar ao Mural</button>
-  </div>
+  <main class="container">
+    <div class="panel">
+      <div class="field">
+        <label for="nameInput">Seu nome</label>
+        <input id="nameInput" type="text" placeholder="Digite seu nome" />
+      </div>
 
-  <div class="mural" id="mural"></div>
+      <div id="drop" class="drop">
+        Arraste e solte uma foto aqui ou
+        <label for="fileInput" class="uploader">anexe uma foto</label>
+        <input id="fileInput" type="file" accept="image/*" style="display:none" />
+      </div>
+      <small class="hint">Formatos aceitos: JPG, PNG, GIF. Tamanho até 10MB.</small>
+    </div>
 
-  <script>
-    function adicionarMural() {
-      const nome = document.getElementById("nome").value;
-      const fotoInput = document.getElementById("foto");
-      const mural = document.getElementById("mural");
+    <section>
+      <h2>Fotos do mural</h2>
+      <div id="gallery" class="gallery"></div>
+    </section>
+  </main>
 
-      if (!nome || !fotoInput.files[0]) {
-        alert("Por favor, preencha o nome e selecione uma foto.");
-        return;
-      }
+  <template id="card-tpl">
+    <div class="card">
+      <img class="photo" />
+      <div class="meta">
+        <div class="who"><span class="avatar"></span><span class="name"></span></div>
+        <input class="caption" placeholder="Escreva um título (opcional)" />
+        <time class="when"></time>
+      </div>
+    </div>
+  </template>
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const card = document.createElement("div");
-        card.classList.add("card");
-
-        card.innerHTML = `
-          <img src="${e.target.result}" alt="Foto de ${nome}">
-          <h3>${nome}</h3>
-          <p>Lembras do seu acampamento ✨</p>
-        `;
-
-        mural.prepend(card);
-      };
-
-      reader.readAsDataURL(fotoInput.files[0]);
-
-      // limpar campos
-      document.getElementById("nome").value = "";
-      document.getElementById("foto").value = "";
-    }
-  </script>
-
+  <script src="app.js"></script>
 </body>
 </html>
